@@ -6,12 +6,6 @@ Designed strictly following the **RaDe Creatives AI/ML Guard** enterprise UI tem
 
 ---
 
-## 🚀 Live Working Localhost Link
-Your server is running and accessible at:
-### 👉 **[http://localhost:8000](http://localhost:8000)** (or `http://127.0.0.1:8000`)
-
----
-
 ## 🛠 Features & Capabilities
 
 ### 1. Theme Switcher (Persistent)
@@ -57,5 +51,11 @@ The exact backend logic from the original `ReFactorix_(1).ipynb` is preserved **
 ```powershell
 python run.py
 ```
-Open your browser at `http://localhost:8000`.
 
+## 🚀 Live Working Localhost Link
+Your server is running and accessible at:
+### 👉 **[http://localhost:8000](http://localhost:8000)** (or `http://127.0.0.1:8000`)
+
+
+## 🚀 Live Working Deployed Link
+https://55bff9aaec3e0b.lhr.life
