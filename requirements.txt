@@ -3,3 +3,4 @@ uvicorn>=0.31.0
 pydantic>=2.9.2
 GitPython>=3.1.43
 networkx>=3.3
+packaging>=23.0

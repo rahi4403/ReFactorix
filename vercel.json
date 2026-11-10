@@ -1,4 +1,10 @@
 {
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "backend/**,static/**,sample_repo/**",
+      "maxDuration": 30
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",

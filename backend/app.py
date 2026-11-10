@@ -1,6 +1,7 @@
 import os
 import shutil
 import difflib
+import tempfile
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.staticfiles import StaticFiles
@@ -39,7 +40,7 @@ app.add_middleware(
 # Current active target directory (defaults to ./sample_repo)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SAMPLE_REPO_DIR = os.path.join(BASE_DIR, "sample_repo")
-TARGET_DIR = os.path.join(BASE_DIR, "modernization_target")
+TARGET_DIR = os.path.join(tempfile.gettempdir(), "modernization_target") if os.environ.get("VERCEL") else os.path.join(BASE_DIR, "modernization_target")
 current_active_directory = SAMPLE_REPO_DIR
 
 # Request models
