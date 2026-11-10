@@ -1,9 +1,13 @@
 import ast
 import os
+os.environ["GIT_PYTHON_REFRESH"] = "quiet"
 import glob
 import json
 import xml.etree.ElementTree as ET
-import git
+try:
+    import git
+except Exception:
+    git = None
 import networkx as nx
 import difflib
 import shutil
@@ -29,6 +33,10 @@ def clone_target_repository(repo_url=None, target_dir="./modernization_target"):
     """
     if not repo_url:
         print("No URL provided. Exiting.")
+        return None
+
+    if git is None:
+        print("Git is not available in this container environment.")
         return None
 
     if os.path.exists(target_dir):

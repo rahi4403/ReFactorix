@@ -1,13 +1,17 @@
 {
   "functions": {
     "api/index.py": {
-      "includeFiles": "backend/**,static/**,sample_repo/**",
+      "includeFiles": "backend/**,static/**,sample_repo/**,public/**",
       "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/api",
       "destination": "/api/index.py"
     }
   ]

@@ -1,4 +1,5 @@
 import os
+os.environ["GIT_PYTHON_REFRESH"] = "quiet"
 import shutil
 import difflib
 import tempfile
@@ -63,7 +64,8 @@ class DiffRequest(BaseModel):
     modernized_code: str
 
 
-@app.get("/api/status")
+@app.api_route("/api/status", methods=["GET", "HEAD"])
+@app.api_route("/status", methods=["GET", "HEAD"])
 async def get_system_status():
     global current_active_directory
     is_sample = (current_active_directory == SAMPLE_REPO_DIR)
@@ -79,7 +81,9 @@ async def get_system_status():
 
 
 @app.post("/api/pipeline/run")
+@app.post("/pipeline/run")
 @app.post("/api/modernize")
+@app.post("/modernize")
 async def run_pipeline_endpoint(req: PipelineRunRequest):
     global current_active_directory
 
@@ -156,6 +160,7 @@ async def run_pipeline_endpoint(req: PipelineRunRequest):
 
 
 @app.post("/api/audit")
+@app.post("/audit")
 async def audit_endpoint(req: AuditRequest):
     directory = req.directory or current_active_directory
     findings = comprehensive_archaeologist_audit(directory)
@@ -168,6 +173,7 @@ async def audit_endpoint(req: AuditRequest):
 
 
 @app.post("/api/ast")
+@app.post("/ast")
 async def ast_endpoint(req: ASTRequest):
     directory = req.directory or current_active_directory
     nodes = parse_codebase_ast(directory)
@@ -230,6 +236,7 @@ def validate_code_guardrail(code: str) -> tuple[bool, str, str]:
 
 
 @app.post("/api/guardrail/validate")
+@app.post("/guardrail/validate")
 async def guardrail_endpoint(req: GuardrailRequest):
     is_valid, message, compiler = validate_code_guardrail(req.code)
     return {
@@ -240,6 +247,7 @@ async def guardrail_endpoint(req: GuardrailRequest):
 
 
 @app.post("/api/diff")
+@app.post("/diff")
 async def diff_endpoint(req: DiffRequest):
     is_valid, message, compiler = validate_code_guardrail(req.modernized_code)
     diff_lines = []
@@ -277,14 +285,18 @@ if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 
-@app.get("/", response_class=HTMLResponse)
-@app.get("/api", response_class=HTMLResponse)
-@app.get("/api/index", response_class=HTMLResponse)
-@app.get("/api/index.py", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/api", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/api/", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/api/index", methods=["GET", "HEAD"], response_class=HTMLResponse)
+@app.api_route("/api/index.py", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def serve_index():
     for candidate_file in [
+        os.path.join(BASE_DIR, "public", "index.html"),
+        os.path.join(os.getcwd(), "public", "index.html"),
         os.path.join(BASE_DIR, "index.html"),
         os.path.join(os.getcwd(), "index.html"),
+        "/var/task/public/index.html",
         "/var/task/index.html",
         os.path.join(static_dir, "index.html"),
         os.path.join(BASE_DIR, "static", "index.html"),
@@ -295,4 +307,11 @@ async def serve_index():
             with open(candidate_file, "r", encoding="utf-8") as f:
                 return HTMLResponse(content=f.read())
     return HTMLResponse(content="<h1>ReFactorix Dashboard loading...</h1>")
+
+
+@app.api_route("/{full_path:path}", methods=["GET", "HEAD"], response_class=HTMLResponse)
+async def catch_all_frontend(full_path: str):
+    if full_path.startswith("static/") or full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="Not Found")
+    return await serve_index()
 
