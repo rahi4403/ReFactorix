@@ -263,15 +263,35 @@ async def diff_endpoint(req: DiffRequest):
 
 # Mount static assets
 static_dir = os.path.join(BASE_DIR, "static")
+if not os.path.exists(static_dir):
+    for candidate in [
+        os.path.join(os.path.dirname(__file__), "..", "static"),
+        os.path.join(os.getcwd(), "static"),
+        "/var/task/static"
+    ]:
+        if os.path.exists(candidate):
+            static_dir = candidate
+            break
+
 if os.path.exists(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)
+@app.get("/api", response_class=HTMLResponse)
+@app.get("/api/index", response_class=HTMLResponse)
+@app.get("/api/index.py", response_class=HTMLResponse)
 async def serve_index():
-    index_file = os.path.join(static_dir, "index.html")
-    if os.path.exists(index_file):
-        with open(index_file, "r", encoding="utf-8") as f:
-            return HTMLResponse(content=f.read())
-    return HTMLResponse(content="<h1>ReFactorix API running. Frontend building...</h1>")
+    for candidate_dir in [
+        static_dir,
+        os.path.join(BASE_DIR, "static"),
+        os.path.join(os.path.dirname(__file__), "..", "static"),
+        os.path.join(os.getcwd(), "static"),
+        "/var/task/static"
+    ]:
+        index_file = os.path.join(candidate_dir, "index.html")
+        if os.path.exists(index_file):
+            with open(index_file, "r", encoding="utf-8") as f:
+                return HTMLResponse(content=f.read())
+    return HTMLResponse(content="<h1>ReFactorix Dashboard loading...</h1>")
 
