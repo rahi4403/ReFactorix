@@ -282,16 +282,17 @@ if os.path.exists(static_dir):
 @app.get("/api/index", response_class=HTMLResponse)
 @app.get("/api/index.py", response_class=HTMLResponse)
 async def serve_index():
-    for candidate_dir in [
-        static_dir,
-        os.path.join(BASE_DIR, "static"),
-        os.path.join(os.path.dirname(__file__), "..", "static"),
-        os.path.join(os.getcwd(), "static"),
-        "/var/task/static"
+    for candidate_file in [
+        os.path.join(BASE_DIR, "index.html"),
+        os.path.join(os.getcwd(), "index.html"),
+        "/var/task/index.html",
+        os.path.join(static_dir, "index.html"),
+        os.path.join(BASE_DIR, "static", "index.html"),
+        os.path.join(os.path.dirname(__file__), "..", "static", "index.html"),
+        "/var/task/static/index.html"
     ]:
-        index_file = os.path.join(candidate_dir, "index.html")
-        if os.path.exists(index_file):
-            with open(index_file, "r", encoding="utf-8") as f:
+        if os.path.exists(candidate_file):
+            with open(candidate_file, "r", encoding="utf-8") as f:
                 return HTMLResponse(content=f.read())
     return HTMLResponse(content="<h1>ReFactorix Dashboard loading...</h1>")
 
