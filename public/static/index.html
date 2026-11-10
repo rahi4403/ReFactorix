@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReFactorix — Autonomous Legacy Code & Security Modernization Agent</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- ==============================================================================
+       Header & Global Navigation Bar
+       ============================================================================== -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <!-- Brand Logo -->
+      <div class="brand-wrapper" onclick="switchTab('dashboard')">
+        <div class="brand-icon">
+          <!-- 4-point star icon matching template -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">ReFactorix <span style="font-weight: 400; font-size: 0.85rem; color: var(--text-muted);">// v2.4</span></span>
+          <span class="brand-tag">Autonomous Modernization Agent</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-tab="dashboard">
+          <i data-lucide="layout-grid" style="width: 15px; height: 15px;"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="audit">
+          <i data-lucide="shield-alert" style="width: 15px; height: 15px;"></i>
+          <span>Archaeologist Audit</span>
+          <span class="tab-badge" id="tab-audit-badge">—</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="ast">
+          <i data-lucide="network" style="width: 15px; height: 15px;"></i>
+          <span>AST Code Structure</span>
+          <span class="tab-badge" id="tab-ast-badge">—</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="sandbox">
+          <i data-lucide="git-pull-request" style="width: 15px; height: 15px;"></i>
+          <span>Guardrail Sandbox</span>
+        </button>
+      </nav>
+
+      <!-- Nav Actions & Theme Switcher -->
+      <div class="nav-actions">
+        <!-- Theme Switcher: Dark, Light, System -->
+        <div class="theme-switcher">
+          <button class="theme-btn active" data-theme="dark" title="Dark Mode">
+            <i data-lucide="moon" style="width: 15px; height: 15px;"></i>
+          </button>
+          <button class="theme-btn" data-theme="light" title="Light Mode">
+            <i data-lucide="sun" style="width: 15px; height: 15px;"></i>
+          </button>
+          <button class="theme-btn" data-theme="system" title="System Theme">
+            <i data-lucide="monitor" style="width: 15px; height: 15px;"></i>
+          </button>
+        </div>
+
+        <button class="btn-primary" onclick="switchTab('dashboard'); document.getElementById('repo-url-input').focus();" style="padding: 9px 18px; font-size: 0.85rem;">
+          <i data-lucide="terminal" style="width: 14px; height: 14px;"></i> Ingest Repo
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Body Content -->
+  <main class="container" style="flex: 1; padding-top: 1rem; padding-bottom: 3rem;">
+
+    <!-- ==============================================================================
+         TAB 1: DASHBOARD (Overview & Repo Ingestion)
+         ============================================================================== -->
+    <div id="tab-dashboard" class="tab-content-view active">
+      
+      <!-- Hero Banner (Matching template top-left: Cyber wave ribbon & bold pitch) -->
+      <section class="hero-wrapper">
+        <!-- Animated 3D Wave Canvas -->
+        <div class="hero-canvas-container">
+          <canvas id="hero-wave-canvas"></canvas>
+        </div>
+
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            CYBER REFACTORIX // AUTONOMOUS SECURITY ENGINE
+          </div>
+
+          <h1 class="hero-title">
+            Future-proofing Codebases with <span class="hero-title-highlight">ReFactorix</span> Autonomous Modernization
+          </h1>
+
+          <p class="hero-subtitle">
+            Autonomous legacy code deconstruction and security hardening. Ingest public repositories, uncover vulnerable dependency manifests across Python, Node.js, and Java, map architectural AST code graphs, and validate refactored patches with deterministic mathematical syntax guardrails.
+          </p>
+
+          <!-- Repository Ingestion Pill Form -->
+          <form id="pipeline-ingestion-form" class="ingestion-form-pill">
+            <div class="ingestion-input-wrapper">
+              <i data-lucide="github" style="width: 18px; height: 18px; color: var(--accent-orange);"></i>
+              <input 
+                type="text" 
+                id="repo-url-input" 
+                class="ingestion-input" 
+                placeholder="Enter public GitHub repository URL (e.g. psf/requests)" 
+                autocomplete="off"
+              />
+            </div>
+            <button type="submit" id="pipeline-trigger-btn" class="btn-primary">
+              <i data-lucide="play" style="width: 15px; height: 15px;"></i> Run Modernization Pipeline
+            </button>
+          </form>
+
+          <!-- Quick Test Samples -->
+          <div class="quick-samples">
+            <span>Quick Target:</span>
+            <span class="sample-chip" data-sample="local">Enterprise Monolith Demo (Local)</span>
+            <span class="sample-chip" data-sample="https://github.com/psf/requests">psf/requests</span>
+            <span class="sample-chip" data-sample="https://github.com/pallets/flask">pallets/flask</span>
+          </div>
+
+          <!-- Real-time Pipeline Progress Stepper (Dynamic Execution State) -->
+          <div class="pipeline-stepper-card">
+            <div class="stepper-header">
+              <span class="stepper-title">Autonomous Execution Pipeline</span>
+              <span class="stepper-status-badge" id="pipeline-status-badge">
+                <i data-lucide="radio" style="width: 12px; height: 12px;"></i> <span id="pipeline-status-text">Standby / Awaiting Ingestion</span>
+              </span>
+            </div>
+            <div class="stepper-stages" id="pipeline-stages-container">
+              <div class="step-item" id="step-stage-1">
+                <div class="step-num-title">
+                  <span class="step-indicator" id="step-indicator-1">1</span>
+                  <span>Cloning Repo</span>
+                </div>
+                <span class="step-desc" id="step-desc-1">Target Git Clone & Directory Indexing</span>
+              </div>
+              <div class="step-item" id="step-stage-2">
+                <div class="step-num-title">
+                  <span class="step-indicator" id="step-indicator-2">2</span>
+                  <span>Archaeologist Audit</span>
+                </div>
+                <span class="step-desc" id="step-desc-2">Multi-Format Manifest & Pattern Scan</span>
+              </div>
+              <div class="step-item" id="step-stage-3">
+                <div class="step-num-title">
+                  <span class="step-indicator" id="step-indicator-3">3</span>
+                  <span>AST Topology</span>
+                </div>
+                <span class="step-desc" id="step-desc-3">Deconstruct Functions & Classes</span>
+              </div>
+              <div class="step-item" id="step-stage-4">
+                <div class="step-num-title">
+                  <span class="step-indicator" id="step-indicator-4">4</span>
+                  <span>Verifying Guardrails</span>
+                </div>
+                <span class="step-desc" id="step-desc-4">Mathematical Syntax & Diff Synthesis</span>
+              </div>
+            </div>
+
+            <!-- Dynamic Live Execution Log Banner -->
+            <div id="live-execution-banner" style="display: none; margin-top: 1rem; padding: 10px 16px; border-radius: 10px; background: rgba(255, 91, 38, 0.08); border: 1px solid rgba(255, 91, 38, 0.3); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-primary); align-items: center; justify-content: space-between;">
+              <span id="live-execution-msg" style="display: flex; align-items: center; gap: 8px;">
+                <span class="pulse-dot"></span>
+                <span>Initializing pipeline...</span>
+              </span>
+              <span id="live-execution-time" style="color: var(--accent-orange); font-weight: 700;">0.0s</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Metrics Row (Dynamic Placeholders) -->
+      <section class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-number">
+            <span id="metric-findings-count">—</span>
+          </div>
+          <div class="metric-label">Archaeologist Vulnerabilities Flagged</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">
+            <span id="metric-nodes-count">—</span>
+          </div>
+          <div class="metric-label">AST Code Blocks & Classes Mapped</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">
+            <span id="metric-guardrail-status">—</span>
+          </div>
+          <div class="metric-label">Guardrail Mathematical Pass Rate</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-number">
+            <span id="metric-manifests-count">—</span>
+          </div>
+          <div class="metric-label">Supported Manifest Ecosystems</div>
+        </div>
+      </section>
+
+      <!-- Template Inspired: ReFactorix Core Engine Showcase -->
+      <section class="core-engine-grid">
+        <!-- Torus Glowing Card (Matching AIQu VEIL card in template) -->
+        <div class="veil-hero-card">
+          <div>
+            <div class="hero-badge" style="margin-bottom: 1rem;">
+              <span class="pulse-dot"></span>
+              CORE MODERNIZATION ENGINE
+            </div>
+            <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.02em; margin-bottom: 0.75rem;">
+              ReFactorix VEIL — The End of Legacy Technical Debt
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+              Full quantum-grade code security without sacrificing engineering speed, syntactic accuracy, or global repository deployability.
+            </p>
+          </div>
+
+          <div class="torus-visual-box">
+            <div class="torus-glow-ring">
+              <i data-lucide="cpu" style="width: 48px; height: 48px; color: white;"></i>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-primary" onclick="switchTab('audit');" style="flex: 1;">
+              <i data-lucide="search" style="width: 15px; height: 15px;"></i> View Archaeological Scan
+            </button>
+            <button class="btn-secondary" onclick="switchTab('ast');" style="flex: 1;">
+              <i data-lucide="share-2" style="width: 15px; height: 15px;"></i> Explore AST Graph
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Pillars Grid (Matching 4-feature pills in template) -->
+        <div class="four-pillars-grid">
+          <div class="pillar-card">
+            <div class="pillar-icon" style="background: rgba(255, 91, 38, 0.15); color: var(--accent-orange);">
+              <i data-lucide="scan" style="width: 20px; height: 20px;"></i>
+            </div>
+            <h3 class="pillar-title">Multi-Format Archaeologist</h3>
+            <p class="pillar-desc">
+              Scans Python requirements.txt, Node.js package.json, Java pom.xml, and multi-language anti-patterns (eval, urllib2, var).
+            </p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon" style="background: rgba(0, 242, 254, 0.15); color: var(--accent-cyan);">
+              <i data-lucide="git-merge" style="width: 20px; height: 20px;"></i>
+            </div>
+            <h3 class="pillar-title">AST Structural Topology</h3>
+            <p class="pillar-desc">
+              Deep syntactic deconstruction using Python's built-in AST walker to map classes, functions, and cross-file relationships.
+            </p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">
+              <i data-lucide="shield-check" style="width: 20px; height: 20px;"></i>
+            </div>
+            <h3 class="pillar-title">Mathematical Guardrails</h3>
+            <p class="pillar-desc">
+              Pre-commit AST parser validation ensuring modernized code is mathematically syntax-clean before generating diff patches.
+            </p>
+          </div>
+
+          <div class="pillar-card">
+            <div class="pillar-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">
+              <i data-lucide="file-diff" style="width: 20px; height: 20px;"></i>
+            </div>
+            <h3 class="pillar-title">Unified Diff Generator</h3>
+            <p class="pillar-desc">
+              Instant side-by-side comparison and standard unified diff generation ready for enterprise CI/CD pull requests.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Template Right-Side Architecture Feature Section -->
+      <section style="margin-top: 2rem;">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <span class="section-num">01 ARCHITECTURE</span>
+            <h2 class="section-title">Security Inside the Pipeline: Modernization Infrastructure Layer</h2>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+          <div class="glass-panel" style="padding: 2rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; margin-bottom: 0.5rem;">Pipeline Layer 01</div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.75rem;">Pipeline Level Protection</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
+              Automated ingestion sandbox clones public repositories into isolated workspaces, safeguarding host environments from malicious build hooks.
+            </p>
+          </div>
+
+          <div class="glass-panel" style="padding: 2rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-cyan); text-transform: uppercase; margin-bottom: 0.5rem;">Pipeline Layer 02</div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.75rem;">Multi-Manifest Archaeological Compression</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
+              Parses heterogeneous manifests and cross-references semantic version boundaries to locate deprecated dependencies across tech stacks.
+            </p>
+          </div>
+
+          <div class="glass-panel" style="padding: 2rem;">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--accent-emerald); text-transform: uppercase; margin-bottom: 0.5rem;">Pipeline Layer 03</div>
+            <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 0.75rem;">Verified Refactoring & Inference</h3>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
+              Synthesizes parameterized, type-safe code blocks and enforces strict AST syntax compilation before emitting patch diffs.
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ==============================================================================
+         TAB 2: ARCHAEOLOGIST AUDIT (Vulnerability & Manifest Scanner)
+         ============================================================================== -->
+    <div id="tab-audit" class="tab-content-view">
+      
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-num">02 ARCHAEOLOGIST AUDIT</span>
+          <h2 class="section-title">Multi-Format Vulnerability & Manifest Scanner</h2>
+        </div>
+        <button class="btn-primary" onclick="runPipeline('', false);" style="padding: 8px 16px; font-size: 0.85rem;">
+          <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Re-scan Repository
+        </button>
+      </div>
+
+      <!-- Toolbar with Filter Pills and Search -->
+      <div class="audit-toolbar">
+        <div class="filter-chips-group">
+          <span class="filter-chip active" data-filter="all">All Ecosystems</span>
+          <span class="filter-chip" data-filter="python">Python (requirements.txt)</span>
+          <span class="filter-chip" data-filter="node">Node.js (package.json)</span>
+          <span class="filter-chip" data-filter="java">Java Maven (pom.xml)</span>
+          <span class="filter-chip" data-filter="antipattern">Code Anti-Patterns</span>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <div class="filter-chips-group">
+            <span class="filter-chip active" data-severity="all">All Severities</span>
+            <span class="filter-chip" data-severity="critical">Critical</span>
+            <span class="filter-chip" data-severity="high">High</span>
+            <span class="filter-chip" data-severity="medium">Medium</span>
+          </div>
+
+          <div class="search-box-pill">
+            <i data-lucide="search" style="width: 14px; height: 14px; color: var(--text-muted);"></i>
+            <input type="text" id="audit-search-input" placeholder="Search target, file, issue..." />
+          </div>
+        </div>
+      </div>
+
+      <!-- Findings Data Table -->
+      <div class="table-container">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 110px;">Severity</th>
+              <th style="width: 180px;">Category</th>
+              <th style="width: 180px;">Target Symbol</th>
+              <th>Source File Path</th>
+              <th>Detected Risk Assessment</th>
+              <th style="width: 110px; text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="findings-table-body">
+            <!-- Dynamically populated by app.js -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Multi-Manifest Ecosystem Summary -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-top: 2rem;">
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+            <i data-lucide="file-code" style="color: #38BDF8;"></i>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">Python Manifests</h4>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            Evaluates pip pinning versions against semantic version 2.0.0 boundaries in requirements.txt.
+          </p>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+            <i data-lucide="package" style="color: #F59E0B;"></i>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">Node.js Ecosystem</h4>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            Deconstructs package.json dependencies, parsing caret and tilde specifiers for outdated libraries.
+          </p>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+            <i data-lucide="coffee" style="color: #EF4444;"></i>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">Java Maven Artifacts</h4>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            Parses XML pom.xml dependency trees to flag critical artifacts like log4j and vulnerable Spring bridges.
+          </p>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem;">
+            <i data-lucide="alert-triangle" style="color: var(--accent-orange);"></i>
+            <h4 style="font-size: 0.95rem; font-weight: 700;">Code Anti-Patterns</h4>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+            Full-text regex and lexical scanning across py, js, java, cpp, ts for eval, urllib2, var, and document.write.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==============================================================================
+         TAB 3: AST CODE STRUCTURE (Interactive Architectural Node Map)
+         ============================================================================== -->
+    <div id="tab-ast" class="tab-content-view">
+      
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-num">03 AST CODE STRUCTURE</span>
+          <h2 class="section-title">Interactive Architectural Node Map</h2>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <div class="search-box-pill" style="width: 240px;">
+            <i data-lucide="search" style="width: 14px; height: 14px; color: var(--text-muted);"></i>
+            <input type="text" id="ast-search-input" placeholder="Search function or class..." />
+          </div>
+        </div>
+      </div>
+
+      <div class="ast-container-card">
+        <!-- Interactive Graph Viewport -->
+        <div class="graph-viewport">
+          <div class="graph-toolbar">
+            <button class="graph-btn" id="ast-filter-all" title="Show All Nodes">
+              <i data-lucide="layers" style="width: 16px; height: 16px;"></i>
+            </button>
+            <button class="graph-btn" id="ast-filter-classes" title="Classes Only">
+              <i data-lucide="box" style="width: 16px; height: 16px;"></i>
+            </button>
+            <button class="graph-btn" id="ast-filter-functions" title="Functions Only">
+              <i data-lucide="code" style="width: 16px; height: 16px;"></i>
+            </button>
+            <button class="graph-btn" id="ast-reset-btn" title="Reset View">
+              <i data-lucide="maximize-2" style="width: 16px; height: 16px;"></i>
+            </button>
+          </div>
+
+          <!-- Canvas Rendering Area -->
+          <canvas id="ast-network-canvas" class="graph-canvas"></canvas>
+        </div>
+
+        <!-- Node Detail Inspector Drawer -->
+        <div class="ast-inspector" id="ast-node-inspector">
+          <div style="color: var(--text-muted); text-align: center; margin-top: 4rem;">
+            <i data-lucide="mouse-pointer" style="width: 32px; height: 32px; margin-bottom: 8px;"></i>
+            <div>Click any node in the AST graph to inspect its code definition, file path, and modernization properties.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graph Legend & Stats -->
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; padding: 1rem 1.5rem; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border-color);">
+        <div style="display: flex; align-items: center; gap: 24px; font-size: 0.825rem;">
+          <span style="font-weight: 700; color: var(--text-muted); text-transform: uppercase;">LEGEND:</span>
+          <span style="display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+            <span style="width: 12px; height: 12px; background: var(--accent-orange); transform: rotate(45deg); display: inline-block;"></span>
+            Classes (ast.ClassDef)
+          </span>
+          <span style="display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+            <span style="width: 12px; height: 12px; border-radius: 50%; background: var(--accent-cyan); display: inline-block;"></span>
+            Functions (ast.FunctionDef)
+          </span>
+          <span style="display: flex; align-items: center; gap: 8px; color: var(--text-primary);">
+            <span style="width: 12px; height: 12px; border-radius: 3px; background: #64748B; display: inline-block;"></span>
+            Module File Clusters
+          </span>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">
+          Drag nodes to reposition • Scroll to zoom • Pan by dragging canvas
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==============================================================================
+         TAB 4: REFACTORING & GUARDRAIL SANDBOX (Live Diff & Safety Validator)
+         ============================================================================== -->
+    <div id="tab-sandbox" class="tab-content-view">
+      
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <span class="section-num">04 GUARDRAIL SANDBOX</span>
+          <h2 class="section-title">Live Code Diff & AST Safety Validator</h2>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <button id="copy-diff-btn" class="btn-secondary" style="padding: 8px 16px;">
+            <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy Patch Diff
+          </button>
+          <button id="trigger-guardrail-btn" class="btn-primary" style="padding: 8px 18px;">
+            <i data-lucide="shield-check" style="width: 15px; height: 15px;"></i> Validate Syntax with Guardrail
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Preset Selection Bar -->
+      <div class="guardrail-preset-bar" id="guardrail-preset-bar">
+        <span class="preset-chip" id="preset-chip-live" data-preset="live_repo" style="display: inline-flex; align-items: center; gap: 7px; border-color: var(--accent-orange);">
+          <span class="pulse-dot" style="width: 7px; height: 7px;"></span>
+          <span id="live-preset-label">Live Ingested Repo Findings</span>
+        </span>
+        <span class="preset-chip active" data-preset="preset_sql">
+          01. SQL Query -> Parameterized Context Manager
+        </span>
+        <span class="preset-chip" data-preset="preset_eval">
+          02. eval() Anti-Pattern -> Safe literal_eval
+        </span>
+        <span class="preset-chip" data-preset="preset_urllib">
+          03. urllib2 -> Modern urllib.request
+        </span>
+        <span class="preset-chip" data-preset="preset_js">
+          04. JS var & document.write -> Modern Strict DOM
+        </span>
+        <span class="preset-chip" data-preset="preset_error">
+          05. Deliberate Syntax Error (Test Guardrail Rejection)
+        </span>
+      </div>
+
+      <!-- Live Ingested Repo Finding Sub-selector -->
+      <div id="live-findings-subnav" style="display: none; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 1.25rem; padding: 10px 16px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span style="font-size: 0.775rem; font-weight: 700; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 6px;">
+            <i data-lucide="folder-git-2" style="width: 14px; height: 14px;"></i> Ingested Anti-Patterns:
+          </span>
+          <div id="live-findings-chips-container" style="display: inline-flex; gap: 8px; flex-wrap: wrap;"></div>
+        </div>
+        <span id="live-findings-repo-tag" style="font-family: var(--font-mono); font-size: 0.775rem; color: var(--accent-cyan); white-space: nowrap;"></span>
+      </div>
+
+      <!-- Polite Placeholder Prompt for un-ingested Live Repo Findings -->
+      <div id="live-repo-placeholder" style="display: none; padding: 3.5rem 2rem; background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: 16px; text-align: center; margin-bottom: 1.5rem;">
+        <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(255, 91, 38, 0.1); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; border: 1px solid rgba(255, 91, 38, 0.25);">
+          <i data-lucide="radio" style="width: 26px; height: 26px; color: var(--accent-orange);"></i>
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px;">
+          No Live Repository Ingested Yet
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.925rem; max-width: 540px; margin: 0 auto 1.5rem; line-height: 1.6;">
+          Please enter a public GitHub repository URL on the <strong>Dashboard</strong> and click <strong>"Run Modernization Pipeline"</strong> first to extract and modernize live codebase findings here.
+        </p>
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+          <button class="btn-primary" onclick="switchTab('dashboard'); document.getElementById('repo-url-input')?.focus();" style="padding: 10px 20px; font-size: 0.85rem;">
+            <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Go to Dashboard Ingestion
+          </button>
+          <button class="btn-secondary" onclick="loadPreset('preset_sql');" style="padding: 10px 20px; font-size: 0.85rem;">
+            Explore Demo Presets
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Guardrail Status Banner -->
+      <div id="guardrail-banner" class="guardrail-status-banner guardrail-passed">
+        <div id="guardrail-message">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="check-circle-2" style="width: 20px; height: 20px; color: var(--accent-emerald);"></i>
+            <div>
+              <strong>GUARDRAIL VALIDATION PASSED:</strong> Syntax is clean. Code conforms to mathematical AST standards.
+            </div>
+          </div>
+        </div>
+        <span class="badge" style="background: rgba(255, 255, 255, 0.1); color: inherit; font-size: 0.75rem;">
+          Python 3.12 AST Compiler
+        </span>
+      </div>
+
+      <!-- Side-by-Side Comparison Code Cards -->
+      <div class="diff-comparison-grid">
+        <!-- Original Legacy Code Card -->
+        <div class="diff-card">
+          <div class="diff-card-header">
+            <span style="color: var(--accent-rose); display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="alert-circle" style="width: 14px; height: 14px;"></i>
+              <span id="sandbox-legacy-title">Original Legacy Snippet</span>
+            </span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="sandbox-legacy-file" style="font-family: var(--font-mono); font-size: 0.725rem; color: var(--text-muted); display: none;"></span>
+              <span class="badge badge-type">Vulnerable</span>
+            </div>
+          </div>
+          <textarea id="sandbox-legacy-code" class="code-editor-area" spellcheck="false"></textarea>
+        </div>
+
+        <!-- Modernized Secure Code Patch (Editable Sandbox) -->
+        <div class="diff-card">
+          <div class="diff-card-header">
+            <span style="color: var(--accent-emerald); display: flex; align-items: center; gap: 6px;">
+              <i data-lucide="check-circle" style="width: 14px; height: 14px;"></i>
+              <span id="sandbox-modern-title">Modernized Secure Code Patch (Live Editable)</span>
+            </span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="sandbox-modern-file" style="font-family: var(--font-mono); font-size: 0.725rem; color: var(--accent-cyan); display: none;"></span>
+              <span class="badge badge-type" style="color: var(--accent-emerald);">Protected</span>
+            </div>
+          </div>
+          <textarea id="sandbox-modernized-code" class="code-editor-area" spellcheck="false"></textarea>
+        </div>
+      </div>
+
+      <!-- Generated Unified RFC Diff Card -->
+      <div class="unified-diff-card">
+        <div class="diff-card-header">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <i data-lucide="git-commit" style="width: 14px; height: 14px; color: var(--accent-orange);"></i>
+            Generated Unified Diff Patch (difflib RFC-compliant format)
+          </span>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono);">
+            fromfile: 'legacy' | tofile: 'modernized'
+          </span>
+        </div>
+        <div id="unified-diff-output" style="max-height: 280px; overflow-y: auto; background: var(--code-bg); padding: 8px 0;">
+          <!-- Diff lines populated by app.js -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ==============================================================================
+       Footer Section
+       ============================================================================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div class="brand-icon" style="width: 28px; height: 28px; border-radius: 7px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" />
+          </svg>
+        </div>
+        <span style="font-weight: 700; color: var(--text-primary);">ReFactorix v2.4</span>
+        <span>• Autonomous Legacy Code & Security Modernization Engine</span>
+      </div>
+      <div>
+        <span>RaDe Creatives Premium System</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==============================================================================
+       Modal: Detailed Finding Inspection Drawer
+       ============================================================================== -->
+  <div id="finding-detail-modal" class="modal-overlay" onclick="if(event.target === this) closeModal()">
+    <div class="modal-card" id="finding-modal-content">
+      <!-- Populated dynamically by openFindingModal -->
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column-reverse; gap: 8px; pointer-events: none;"></div>
+
+  <!-- Scripts -->
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/wave.js"></script>
+  <script src="/static/js/graph.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
+

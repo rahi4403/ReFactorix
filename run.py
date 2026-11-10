@@ -11,10 +11,12 @@ def find_available_port(start_port=8000, max_attempts=10):
     return start_port
 
 if __name__ == "__main__":
-    port = find_available_port(8000)
+    is_cloud = bool(os.environ.get("PORT"))
+    port = int(os.environ.get("PORT", find_available_port(8000)))
+    host = "0.0.0.0" if is_cloud else "127.0.0.1"
     print(f"============================================================")
     print(f"  ReFactorix: Autonomous Legacy Code & Security Modernizer  ")
-    print(f"  Local Dashboard: http://localhost:{port}                 ")
+    print(f"  Dashboard running on: http://{host}:{port}                ")
     print(f"============================================================")
-    uvicorn.run("backend.app:app", host="127.0.0.1", port=port, log_level="info", reload=False)
+    uvicorn.run("backend.app:app", host=host, port=port, log_level="info", reload=False)
 
